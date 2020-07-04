@@ -1,6 +1,6 @@
 Package: logr
 Title: Creates Log Files
-Version: 1.0.3
+Version: 1.0.4
 Authors@R: 
     person(given = "David",
            family = "Bosak",
@@ -17,8 +17,8 @@ Suggests: knitr, qpdf, rmarkdown, testthat
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1
 NeedsCompilation: no
-Packaged: 2020-06-30 16:12:24 UTC; dbosak
+Packaged: 2020-07-04 13:55:57 UTC; dbosak
 Author: David Bosak [aut, cre]
 Maintainer: David Bosak <dbosak01@gmail.com>
 Repository: CRAN
-Date/Publication: 2020-07-01 08:50:02 UTC
+Date/Publication: 2020-07-04 22:20:11 UTC
