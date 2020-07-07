@@ -1,11 +1,16 @@
 # logr <img src='man/images/logr.svg' align="right" height="138" />
 <!-- badges: start -->
+
+[![logr version](https://www.r-pkg.org/badges/version/logr)](https://cran.r-project.org/package=logr)
+[![logr lifecycle](https://img.shields.io/badge/lifecycle-stable-blue.svg)](https://cran.r-project.org/package=logr)
+[![logr downloads](https://cranlogs.r-pkg.org/badges/grand-total/logr)](https://cran.r-project.org/package=logr)
 [![Travis build status](https://travis-ci.com/dbosak01/logr.svg?branch=master)](https://travis-ci.com/dbosak01/logr)
+
 <!-- badges: end -->
 The **logr** package helps create log files for R scripts.  The package 
 provides easy logging, without the complexity of other logging systems.  It is 
 designed for analysts who simply want a written log of the their program 
-execution.  The package is designed as a wrapper to 
+execution.  The package is implemented as a wrapper to 
 the base R `sink()` function.
 
 ## How to use
