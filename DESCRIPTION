@@ -1,6 +1,6 @@
 Package: logr
 Title: Creates Log Files
-Version: 1.0.5
+Version: 1.1.0
 Authors@R: 
     person(given = "David",
            family = "Bosak",
@@ -13,12 +13,14 @@ Description: Contains functions to help create log files.  The
 License: CC0
 Encoding: UTF-8
 LazyData: true
+URL: https://github.com/dbosak01/logr
+BugReports: https://github.com/dbosak01/logr/issues
 Suggests: knitr, qpdf, rmarkdown, testthat
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1
 NeedsCompilation: no
-Packaged: 2020-07-07 04:57:02 UTC; dbosak
+Packaged: 2020-08-09 05:10:04 UTC; dbosak
 Author: David Bosak [aut, cre]
 Maintainer: David Bosak <dbosak01@gmail.com>
 Repository: CRAN
-Date/Publication: 2020-07-07 13:00:08 UTC
+Date/Publication: 2020-08-10 15:30:03 UTC

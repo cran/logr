@@ -2,9 +2,15 @@
 % Please edit documentation in R/logr.R
 \name{log_print}
 \alias{log_print}
+\alias{put}
+\alias{sep}
 \title{Print an object to the log}
 \usage{
 log_print(x, ..., console = TRUE, blank_after = TRUE, msg = FALSE)
+
+put(x, ..., console = TRUE, blank_after = TRUE, msg = FALSE)
+
+sep(x, console = TRUE)
 }
 \arguments{
 \item{x}{The object to print.}
@@ -42,6 +48,19 @@ and elapsed time since the last call to \code{log_print}.  When printing
 a data frame, the \code{log_print} function will also print the number
 and rows and column in the data frame.  These counts may also be useful
 in debugging.
+
+Notes may be turned off either by setting the \code{show_notes} parameter
+on \code{log_open} to FALSE, or by setting the global option "logr.notes"
+to FALSE.
+
+The \code{put} function is a shorthand alias for \code{log_print}. You can
+use \code{put} anywhere you would use \code{log_print}.  The functionality
+is identical.
+
+The \code{sep} function is also a shorthand alias for \code{log_print},
+except it will print a separator before and after the printed text.  This
+function is intended for documentation purposes, and you can use it
+to help organize your log into sections.
 }
 \examples{
 # Create temp file location

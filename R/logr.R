@@ -25,6 +25,10 @@
 #' \code{log_open} at the top of the program, call \code{log_print()} 
 #' as needed in the 
 #' program body, and call \code{log_close()} once at the end of the program.  
+#' 
+#' Logging may be controlled globally using the options "logr.on" and 
+#' "logr.notes".  Both options accept TRUE or FALSE values, and control
+#' log printing or log notes, respectively. 
 #'
 #' See function documentation for additional details.
 #' @docType package
@@ -93,6 +97,17 @@ separator <-
 #' of the script, call \code{log_print} as needed to log interim state, 
 #' and call \code{log_close} at the bottom of the script. 
 #' 
+#' Logging may be controlled globally using the "logr.on" option.  This option
+#' accepts a TRUE or FALSE value. If the option is set to FALSE, \strong{logr}
+#' will print to the console, but not to the log. 
+#' Example: \code{options("logr.on" = TRUE)}
+#' 
+#' Notes may be controlled globally using the "logr.notes" option.  This option
+#' also accepts a TRUE or FALSE value, and determines whether or not to print
+#' notes in the log.  The global option will override the \code{show_notes}
+#' parameter on the \code{log_open} function. 
+#' Example: \code{options("logr.notes" = FALSE)}
+#' 
 #' @param file_name The name of the log file.  If no path is specified, the 
 #' working directory will be used.
 #' @param logdir Send the log to a log directory named "log".  If the log 
@@ -127,6 +142,18 @@ separator <-
 #' writeLines(readLines(lf))
 log_open <- function(file_name = "", logdir = TRUE, show_notes = TRUE) {
   
+  if (is.null(options()[["logr.on"]]) == FALSE) {
+    
+   opt <- options("logr.on")
+   
+   if (all(opt[[1]] == FALSE)) 
+     e$log_status = "off"
+   else 
+     e$log_status = "on"
+    
+  } else e$log_status = "on"
+  
+  
   lpath <- ""
   
   # If no filename is specified, make up something.
@@ -159,60 +186,76 @@ log_open <- function(file_name = "", logdir = TRUE, show_notes = TRUE) {
     }
   }
   
-  # Create path for message file
-  mpath <- sub(".log", ".msg", lpath, fixed = TRUE)
-  e$msg_path <- mpath
-
+  if (e$log_status == "off") {
     
-  # Kill any existing log file
-  if (file.exists(lpath)) {
-    file.remove(lpath)
-  }
+    message("Log is off.")
+    
+  } else {
   
-  # Kill any existing msg file  
-  if (file.exists(mpath)) {
-    file.remove(mpath)
-  }
+    # Create path for message file
+    mpath <- sub(".log", ".msg", lpath, fixed = TRUE)
+    e$msg_path <- mpath
   
-  # At one point considered creating a dump file
-  # automatically.  Still under consideration.
-  # if (file.exists(dump_path)) {
-  #   file.remove(dump_path)
-  # }
-
-  # Set global variable
-  e$log_path <- lpath
-  e$log_status = "open"
-  
-  # Attach error event handler
-  options(error = error_handler)
-  
-  # Clear any warnings
-  has_warnings <- FALSE
-  if(exists("last.warning")) {
-    lw <- get("last.warning")
-    has_warnings <- length(lw) > 0
-    if(has_warnings) {
-      log_print(warnings(), console = FALSE)
-      log_print(warnings(), console = FALSE, msg = TRUE)
-      assign("last.warning", NULL, envir = baseenv())
+      
+    # Kill any existing log file
+    if (file.exists(lpath)) {
+      file.remove(lpath)
     }
-  }
+    
+    # Kill any existing msg file  
+    if (file.exists(mpath)) {
+      file.remove(mpath)
+    }
+    
+    # At one point considered creating a dump file
+    # automatically.  Still under consideration.
+    # if (file.exists(dump_path)) {
+    #   file.remove(dump_path)
+    # }
   
-  # Doesn't seem to work. At least on Windows. Bummer.
-  #options(warn = 1, warning = warning_handler)
+    # Set global variable
+    e$log_path <- lpath
+    e$log_status = "open"
+    
+    # Attach error event handler
+    options(error = error_handler)
+    
+    # Clear any warnings
+    has_warnings <- FALSE
+    if(exists("last.warning")) {
+      lw <- get("last.warning")
+      has_warnings <- length(lw) > 0
+      if(has_warnings) {
+        assign("last.warning", NULL, envir = baseenv())
+      }
+    }
+    
+    # Doesn't seem to work. At least on Windows. Bummer.
+    #options(warn = 1, warning = warning_handler)
+    
+    # Create the log header
+    print_log_header(lpath)
+    
+    # Record timestamp for later use by log_print
+    ts <- Sys.time()
+    e$log_time = ts
+    e$log_start_time = ts
   
-  # Create the log header
-  print_log_header(lpath)
-  
-  # Record timestamp for later use by log_print
-  ts <- Sys.time()
-  e$log_time = ts
-  e$log_start_time = ts
+    
+    if (is.null(options()[["logr.notes"]]) == FALSE) {
+      
+      optn <- options("logr.notes")
+      
+      e$log_show_notes = optn[[1]] 
+      
+    } else {
+      
+      # Capture show_notes parameter
+      e$log_show_notes = show_notes
+    }
 
   
-  # Capture show_notes parameter
-  e$log_show_notes = show_notes
+  }
   
   return(lpath)
   
@@ -223,7 +266,9 @@ log_open <- function(file_name = "", logdir = TRUE, show_notes = TRUE) {
 #' 
 #' @description 
 #' The \code{log_print} function prints an object to the currently opened log.
-#' 
+#' @usage log_print(x, ..., console = TRUE, blank_after = TRUE, msg = FALSE)
+#' @usage put(x, ..., console = TRUE, blank_after = TRUE, msg = FALSE)
+#' @usage sep(x, console = TRUE)
 #' @details 
 #' The log is initialized with \code{log_open}.  Once the log is open, objects
 #' like variables and data frames can be printed to the log to monitor execution
@@ -238,7 +283,20 @@ log_open <- function(file_name = "", logdir = TRUE, show_notes = TRUE) {
 #' a data frame, the \code{log_print} function will also print the number
 #' and rows and column in the data frame.  These counts may also be useful 
 #' in debugging.   
+#' 
+#' Notes may be turned off either by setting the \code{show_notes} parameter
+#' on \code{log_open} to FALSE, or by setting the global option "logr.notes"
+#' to FALSE.
 #'
+#' The \code{put} function is a shorthand alias for \code{log_print}. You can
+#' use \code{put} anywhere you would use \code{log_print}.  The functionality
+#' is identical.
+#' 
+#' The \code{sep} function is also a shorthand alias for \code{log_print}, 
+#' except it will print a separator before and after the printed text.  This 
+#' function is intended for documentation purposes, and you can use it
+#' to help organize your log into sections.
+#' 
 #' @param x The object to print.  
 #' @param ... Any parameters to pass to the print function.
 #' @param console Whether or not to print to the console.  Valid values are
@@ -250,6 +308,8 @@ log_open <- function(file_name = "", logdir = TRUE, show_notes = TRUE) {
 #' intended to be used internally.  Value values are TRUE and FALSE.  The 
 #' default value is FALSE.
 #' @return The object, invisibly
+#' @aliases put 
+#' @aliases sep
 #' @seealso \code{\link{log_open}} to open the log, 
 #' and \code{\link{log_close}} to close the log.
 #' @export
@@ -279,6 +339,7 @@ log_print <- function(x, ...,
                       blank_after = TRUE, 
                       msg = FALSE) {
   
+  update_status()
   
   if (e$log_status == "open") {
   
@@ -355,14 +416,43 @@ log_print <- function(x, ...,
         sink()
       }
     )
-  } else {
+  } else if (e$log_status == "off") {
+    print(x, ...) 
+  }  else {
+    print(x, ...)
     message("Log is not open.")
   }
   
   invisible(x)
 }
 
+#' @aliases log_print
+#' @export
+put <- function(x, ..., 
+                console = TRUE, 
+                blank_after = TRUE, 
+                msg = FALSE) {
+  
+  # Pass everything to log_print()
+  ret <- log_print(x, ..., console = console, blank_after = blank_after,
+                   msg = msg)
+  
+  invisible(ret)
+}
 
+#' @aliases log_print
+#' @export
+sep <- function(x, console = TRUE) {
+  
+  # Pass everything to log_print()
+  log_print(separator, blank_after = FALSE)
+  
+  str <- paste(strwrap(x, nchar(separator)), collapse = "\n")
+  ret <- log_print(str, blank_after = FALSE)
+  log_print(separator)
+  
+  invisible(ret)
+}
 
 #' @title
 #' Close the log
@@ -406,6 +496,8 @@ log_print <- function(x, ...,
 #' writeLines(readLines(lf))
 log_close <- function() {
   
+  update_status()
+  
   if (e$log_status == "open") {
     has_warnings <- FALSE
     if(exists("last.warning")) {
@@ -431,9 +523,13 @@ log_close <- function() {
     e$log_time <- NULL
     e$log_start_time <- NULL
     e$log_status <- "closed"
+  } else if (e$log_status == "off") {
+  
+    message("Log is off.")
+    
   } else {
     message("Log is not open.")
-    
+
   }
   
 }
@@ -467,6 +563,20 @@ warning_handler <- function() {
 
 
 # Utilities ---------------------------------------------------------------
+
+#' @noRd
+update_status <- function() {
+  
+  if (!is.null(options("logr.on")[[1]])) {
+    
+    if(options("logr.on")[[1]] == FALSE)
+      e$log_status <- "off"
+    else if (options("logr.on")[[1]] == TRUE & e$log_status == "off")
+      e$log_status <- "on"
+    
+  }
+}
+
 
 #' Function to print the log header
 #' @noRd
@@ -566,12 +676,26 @@ dhms <- function(t){
 # 
 # library(logr)
 # 
+# 
+# options("logr.on" = TRUE)
+# options("logr.notes" = FALSE)
+# 
+# e$log_status
+# 
 # library(tibble)
+# 
+# file.remove(lf)
 # tmp <- file.path(tempdir(), "test.log")
 # 
 # lf <- log_open(tmp)
 # 
-# log_print("High Mileage Cars Subset")
+# str <- "High Mileage Cars Subset and some more stuff and more and more and let's see how far we can go."
+# 
+# v2 <- strwrap(str, 76)
+# 
+# paste(v2, sep = "|", collapse = "+")
+# 
+# sep(str)
 # 
 # hmc <- tibble(subset(mtcars, mtcars$mpg > 20))
 # log_print(hmc)
@@ -580,7 +704,8 @@ dhms <- function(t){
 # v1 <- c("1", "2", "3")
 # log_print(v1)
 # 
-# log_print("Here is a numeric vector")
+# 
+# sep("Here is a numeric \nvector")
 # v2 <- c(1, 2, 3)
 # log_print(v2)
 # 
@@ -591,7 +716,6 @@ dhms <- function(t){
 # log_print("Here is a list")
 # l1 <- list("A", 1, Sys.Date())
 # log_print(l1)
-# 
 # 
 # # generror
 # # warning("Test warning")
