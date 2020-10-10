@@ -1,11 +1,12 @@
-6d0caee63e6e5cd23d084cb53e3689eb *DESCRIPTION
+d2c6d272ef830f20324bf497612af4eb *DESCRIPTION
 e7abd7468f5525683d658f3169830342 *NAMESPACE
+45440f61ed3e29c7edbc9dfe0700bba4 *NEWS.md
 a07bedb03ee72d848fc3260ab8078e96 *R/logr.R
 4ee80f03dcee391ff073449b7bc8d8a9 *README.md
-c24a270a5e31b85ea41cfcb980d71912 *build/vignette.rds
+9cb827cfc71a7a0565c6e7834141add4 *build/vignette.rds
 ea8eab93de05207476b4c5f91642b478 *inst/doc/logr.R
 74e703044ece4f870d80a839292b2c3d *inst/doc/logr.Rmd
-276292f51fec009ed24f0503e7902251 *inst/doc/logr.html
+82a528091026a86ca6c29df6f53e2517 *inst/doc/logr.html
 d12e1399528d612efe43966ffddfa505 *man/images/logr.svg
 866fd5efac87156229b701ae0a65981d *man/log_close.Rd
 7e96c670dc5ac2eea18bc35128c2293e *man/log_open.Rd
