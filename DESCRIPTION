@@ -1,6 +1,6 @@
 Package: logr
 Title: Creates Log Files
-Version: 1.2.3
+Version: 1.2.4
 Authors@R: 
     person(given = "David",
            family = "Bosak",
@@ -14,14 +14,14 @@ License: CC0
 Encoding: UTF-8
 URL: https://logr.r-sassy.org
 BugReports: https://github.com/dbosak01/logr/issues
-Depends: R (>= 4.0.0)
+Depends: R (>= 3.4.0)
 Suggests: knitr, rmarkdown, testthat, tidylog, dplyr, utils
 Imports: withr
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1
 NeedsCompilation: no
-Packaged: 2021-05-15 11:53:34 UTC; dbosa
+Packaged: 2021-06-16 14:08:11 UTC; dbosa
 Author: David Bosak [aut, cre]
 Maintainer: David Bosak <dbosak01@gmail.com>
 Repository: CRAN
-Date/Publication: 2021-05-15 12:40:03 UTC
+Date/Publication: 2021-06-16 14:30:01 UTC

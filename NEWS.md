@@ -1,4 +1,8 @@
-# logr 1.2.2
+# logr 1.2.4
+
+* Added github action checks for 4 previous versions of R.
+
+# logr 1.2.3
 
 * Fixed printing of crayon color codes into log.
 
