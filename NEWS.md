@@ -1,3 +1,9 @@
+# logr 1.2.5
+
+* Added `log_path()` function to return the path to the log.
+* Added `log_status()` function to return the status of the log.
+* Added support for Unicode characters on Windows.
+
 # logr 1.2.4
 
 * Added github action checks for 4 previous versions of R.
@@ -9,9 +15,9 @@
 # logr 1.2.1
 
 * Incorporated tidylog directly into the logr package. Can be turned on
-using the 'autolog' parameter of log_open(), or by setting the global
+using the 'autolog' parameter of `log_open()`, or by setting the global
 option 'logr.autolog'.  
-* Added log_hook() function to allow other packages to call into logr. 
+* Added `log_hook()` function to allow other packages to call into logr. 
 * Added pkgdown site.
 
 # logr 1.1.1
@@ -20,8 +26,8 @@ option 'logr.autolog'.
 
 # logr 1.1.0
 
-* Added put() function as an alias to log_print()
-* Added sep() function to create a log separator.  This make the log better
+* Added `put()` function as an alias to `log_print()`.
+* Added `sep()` function to create a log separator.  This make the log better
 organized and easier to read
 * Fixed bug to clear any existing errors/warnings on log_open
 
@@ -36,6 +42,6 @@ organized and easier to read
 
 # logr 1.0.3
 
-* Added log_open() function to open the log.
-* Added log_print() function to print to the log.
-* Added log_close() function to print to the log.
+* Added `log_open()` function to open the log.
+* Added `log_print()` function to print to the log.
+* Added `log_close()` function to print to the log.
