@@ -1,3 +1,11 @@
+# logr 1.2.6
+
+* Added covr and codecov
+* Removed extraneous color codes from log by adding stripping function 
+to `log_close()`.
+* Added program path to log header.  Can now get this using `this.path()`.
+* Added `log_code()` function to dump code to the log.
+
 # logr 1.2.5
 
 * Added `log_path()` function to return the path to the log.

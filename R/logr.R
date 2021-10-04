@@ -436,109 +436,6 @@ log_print <- function(x, ...,
 
 
 
-
-log_print_back <- function(x, ..., 
-                      console = TRUE, 
-                      blank_after = TRUE, 
-                      msg = FALSE, 
-                      hide_notes = FALSE) {
-  
-  update_status()
-  
-  if (e$log_status == "open") {
-    
-    # Print to console, if requested
-    if (console == TRUE)
-      print(x, ...)
-    
-    # Print to msg_path, if requested
-    file_path <- e$log_path
-    if (msg == TRUE)
-      file_path <- e$msg_path
-    
-    # Print to log or msg file
-    tryCatch( {
-      
-      f <- file(file_path, open = "a", encoding = "UTF-8")
-      # Use sink() function so print() will work as desired
-      sink(f, append = TRUE)
-      if (all(class(x) == "character")) {
-        if (length(x) == 1 && nchar(x) < 100) {
-          
-          # Print the string
-          cat(x, "\n")
-          
-          # Add blank after if requested
-          if (blank_after == TRUE)
-            cat("\n")
-        } else {
-          
-          # Print the object
-          withr::with_options(c("crayon.colors" = 1), { 
-            print(x, ..., )
-          })
-          
-          if (blank_after == TRUE)
-            cat("\n")
-          
-        }
-        
-        
-      } else {
-        
-        # Print the object
-        withr::with_options(c("crayon.colors" = 1), { 
-          print(x, ...)
-        })
-        
-        if (blank_after == TRUE)
-          cat("\n")
-      }
-    },
-    error = function(cond) {
-      
-      print("Error: Object cannot be printed to log\n")
-    },
-    finally = {
-      
-      # Print time stamps on normal log_print
-      if (hide_notes == FALSE) {
-        tc <- Sys.time()
-        
-        if (e$log_show_notes == TRUE) {
-          
-          # Print data frame row and column counts
-          if (any(class(x) == "data.frame")) {
-            cat(paste("NOTE: Data frame has", nrow(x), "rows and", ncol(x), 
-                      "columns."), "\n")
-            cat("\n")
-          }
-          
-          # Print log timestamps
-          cat(paste("NOTE: Log Print Time: ", tc), "\n")
-          cat(paste("NOTE: Elapsed Time in seconds:", get_time_diff(tc)), "\n")
-          cat("\n")
-        }
-      }
-      
-      # Release sink no matter what
-      sink()
-      
-      # Close file no matter what
-      close(f)
-    }
-    )
-  } else if (e$log_status == "off") {
-    print(x, ...) 
-  }  else {
-    print(x, ...)
-    message("Log is not open.")
-  }
-  
-  invisible(x)
-}
-
-
 #' @aliases log_print
 #' @export
 put <- function(x, ..., 
@@ -672,6 +569,9 @@ log_close <- function() {
     # Print out footer
     print_log_footer(has_warnings)
     
+    # Clean up color codes
+    clear_codes()
+    
     # Clean up environment variables
     e$log_path <- NULL
     e$msg_path <- NULL
@@ -692,66 +592,6 @@ log_close <- function() {
   
 }
 
-#' @title Get the path of the current log
-#' @description The \code{log_path} function gets the path to the currently
-#' opened log.  This function may be useful when you want to manipulate 
-#' the log in some way, and need the path.  The function takes no parameters.
-#' @return The full path to the currently opened log, or NULL if no log is open.
-#' @examples 
-#' # Create temp file location
-#' tmp <- file.path(tempdir(), "test.log")
-#' 
-#' # Open log
-#' log_open(tmp)
-#' 
-#' # Get path
-#' lf <- log_path()
-#' 
-#' # Close log
-#' log_close()
-#' 
-#' lf
-#' @export
-log_path <- function() {
-  
-  ret <- e$log_path
-  
-  return(ret)
-  
-}
-
-#' @title Get the status of the log
-#' @description The \code{log_status} function gets the status of the 
-#' log.  Possible status values are 'on', 'off', 'open', or 'closed'.  
-#' The function takes no parameters.
-#' @return The status of the log as a character string.
-#' @examples 
-#' # Check status before the log is opened
-#' log_status()
-#' # [1] "closed"
-#' 
-#' # Create temp file location
-#' tmp <- file.path(tempdir(), "test.log")
-#' 
-#' # Open log
-#' lf <- log_open(tmp)
-#' 
-#' # Check status after log is opened
-#' log_status()
-#' # [1] "open"
-#' 
-#' # Close log
-#' log_close()
-#' @export
-log_status <- function() {
-  
-  update_status()
-  
-  ret <- e$log_status
-  
-  return(ret)
-  
-}
 
 
 # Event Handlers ----------------------------------------------------------
@@ -771,14 +611,14 @@ error_handler <- function() {
 # Will revisit at some point.
 # In the meantime, warnings will be printed at 
 # the end of the log, above the footer.
-#' @noRd
-warning_handler <- function() {
-  
-  #print("Warning Handler")
-  log_print(warnings())
-  log_quiet(warnings(), msg = TRUE)
-  
-}
+# @noRd
+# warning_handler <- function() {
+#   
+#   #print("Warning Handler")
+#   log_print(warnings())
+#   log_quiet(warnings(), msg = TRUE)
+#   
+# }
 
 
 # Utilities ---------------------------------------------------------------
@@ -815,11 +655,24 @@ update_status <- function() {
 
 
 #' Function to print the log header
+#' @import this.path
 #' @noRd
 print_log_header <- function(log_path) {
   
   log_quiet(paste(separator), blank_after = FALSE)
   log_quiet(paste("Log Path:", log_path), blank_after = FALSE)
+  
+  ppth <- NULL
+  tryCatch({
+    ppth <- this.path::this.path()
+  }, error = function(e) { ppth <- NULL})
+  
+  if (!is.null(ppth)) {
+    if (file.exists(ppth))
+      log_quiet(paste("Program Path:", ppth), blank_after = FALSE)
+  }
+  
+  
   log_quiet(paste("Working Directory:", getwd()), blank_after = FALSE)
   
   inf <- Sys.info()
@@ -895,6 +748,69 @@ dhms <- function(t){
                ,sep = ":"
         )
   )
+}
+
+#' @description Should not be this complicated.  Unfortunately, tidylog
+#' decided to use a Unicode ellipsis character in their log entries. 
+#' This character causes gsub to crash. grep just gives a warning.
+#' So we suppressWarnings, find the lines with strings to replace, 
+#' then loop through each and tryCatch to suppress the error.  Horrible pain.
+#' 
+#' This whole thing is necessary because crayon codes are still being printed
+#' to the log.  So the purpose of the function is to remove the crayon
+#' color codes.  Generally, should not have to do this.
+#' @noRd
+clear_codes <- function(path = NULL) {
+  
+  if (is.null(path))
+    pth <- e$log_path
+  else 
+    pth <- path
+  
+  
+  if (file.exists(pth)) {
+  
+    lns <- readLines(pth, encoding = "UTF-8")
+    
+    f <- file(pth, open = "w", encoding = "native.enc")
+    #f <- file(pth, open = "w", encoding = "UTF-8")
+    
+    # lns <- gsub("[90m", "", lns, fixed = TRUE)
+    res90 <- suppressWarnings(grep("\033[90m", lns, fixed = TRUE))
+    res39 <- suppressWarnings(grep("\033[39m", lns, fixed = TRUE))
+    #lns <- gsub("\033[39m", "", lns, fixed = TRUE, useBytes = TRUE)
+    
+    if (length(res90) > 0 | length(res39) > 0) {
+     # print(res90)
+    #  print(res39)
+      
+      if (length(res90) > 0) {
+        for (ln in res90) {
+          tryCatch({ 
+            lns[ln] <- gsub("\033[90m", "", lns[ln], fixed = TRUE)
+          })
+        }
+      }
+      
+      if (length(res39) > 0) {
+        for (ln in res39) {
+          tryCatch({ 
+            lns[ln] <- gsub("\033[39m", "", lns[ln], fixed = TRUE)
+          })
+        }
+      }
+    }
+    
+    
+    # Print the string
+    writeLines(lns, con = f, useBytes = TRUE)
+    
+    # Close file
+    close(f) 
+    
+    
+  }
+  
 }
 
 # Test Case ---------------------------------------------------------------
