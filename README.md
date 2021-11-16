@@ -5,7 +5,7 @@
 [![logr downloads](https://cranlogs.r-pkg.org/badges/logr)](https://cran.r-project.org/package=logr)
 [![logr total downloads](https://cranlogs.r-pkg.org/badges/grand-total/logr)](https://cran.r-project.org/package=logr)
 [![R-CMD-check](https://github.com/dbosak01/logr/workflows/R-CMD-check/badge.svg)](https://github.com/dbosak01/logr/actions)
-[![Codecov test coverage](https://codecov.io/gh/dbosak01/logr/branch/master/graph/badge.svg)](https://codecov.io/gh/dbosak01/logr?branch=master)
+[![Codecov test coverage](https://codecov.io/gh/dbosak01/logr/branch/master/graph/badge.svg)](https://app.codecov.io/gh/dbosak01/logr?branch=master)
 
 <!-- badges: end -->
 
@@ -54,10 +54,6 @@ information, please visit the **logr** documentation site
 
 If you need help, the first place 
 to turn to is the [logr](https://logr.r-sassy.org) web site.  
-
-If you need additional help, please consult 
-[stackoverflow.com](https://stackoverflow.com).  The stackoverflow 
-community will be very willing to answer your questions.  
 
 If you want to look at the code for the **logr** package, visit the
 github page [here](https://github.com/dbosak01/logr).
