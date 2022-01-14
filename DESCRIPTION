@@ -1,6 +1,6 @@
 Package: logr
 Title: Creates Log Files
-Version: 1.2.7
+Version: 1.2.8
 Authors@R: 
     person(given = "David",
            family = "Bosak",
@@ -20,8 +20,8 @@ Imports: withr, utils, this.path
 VignetteBuilder: knitr
 RoxygenNote: 7.1.2
 NeedsCompilation: no
-Packaged: 2021-11-16 15:50:25 UTC; dbosa
+Packaged: 2022-01-14 02:11:31 UTC; dbosa
 Author: David Bosak [aut, cre]
 Maintainer: David Bosak <dbosak01@gmail.com>
 Repository: CRAN
-Date/Publication: 2021-11-16 16:10:02 UTC
+Date/Publication: 2022-01-14 03:32:46 UTC
