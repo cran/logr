@@ -618,8 +618,18 @@ log_close <- function() {
 #' @noRd
 error_handler <- function() {
   
-  log_print(geterrmessage())
-  log_quiet(geterrmessage(), msg = TRUE)
+  er <- geterrmessage()
+
+  
+  tb <- capture.output(traceback(5, max.lines = 1000))
+  
+  log_print(er, hide_notes = TRUE, blank_after = FALSE)
+  log_print("Traceback:", hide_notes = TRUE, blank_after = FALSE)
+  log_print(tb)
+  log_quiet(er, msg = TRUE, blank_after = FALSE)
+  log_quiet("Traceback:", msg = TRUE, blank_after = FALSE)
+  log_quiet(tb, msg = TRUE)
+
   
 }
 

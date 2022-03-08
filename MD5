@@ -1,7 +1,7 @@
-975cb54865891676cfcb37d0eabf0687 *DESCRIPTION
+f965dfdbbd62112bc0f28221ad0422f1 *DESCRIPTION
 2869fb42bc88344d29fd99c3236b4a7b *NAMESPACE
-4e8a7293d0db57ff16e695704cae8ccf *NEWS.md
-4e7fe389e662460ba33dda2e7a9c789e *R/logr.R
+3e639a4c2a5bc64d04e13304b4a39cc0 *NEWS.md
+5238cef841eaf4c9b9ab9fb8dfcc5999 *R/logr.R
 96efc8044dc7eb284cb7f05c2f93ad36 *R/supplements.R
 06f3c80883857df0be9c18a7e9afd122 *R/unicode.R
 763bb2d68220f053a06ab201587ea0bb *R/utilities.R
@@ -46,13 +46,14 @@ a93dc4a78bc29148b4b35bc15b178be4 *man/log_print.Rd
 cc3fec7038dd9bc112a9c7815c7b5c40 *man/logr.Rd
 6bbaa29edd41e31b9fc3e52b48d3372e *tests/testthat.R
 83cdfa813ec545ffd2800e540b65e115 *tests/testthat/log/test-logr.log
-69ec7ef32ca74f38d3dbb354d48e930d *tests/testthat/log/test.log
+002903df9874a6ae10f6d3c4ab3ef0e1 *tests/testthat/log/test.log
+221b795036bed502f9ad2913ae2e1678 *tests/testthat/log/test.msg
 58b757c0fd646fc9bf128249ad8b547f *tests/testthat/log/test10.log
 8d98ae23f9802329ab8b29f8d59a42fd *tests/testthat/log/test6.log
 82790ef2872b244474b325366a31d516 *tests/testthat/log/test7.log
 ec2aebe140bd2db64115594a9fbae468 *tests/testthat/log/test8.log
 ec2aebe140bd2db64115594a9fbae468 *tests/testthat/log/test8_orig.log
-a163ba22e776b46db0fefd020d7e9be4 *tests/testthat/test-logr.R
+624d54f56d3d7a7ae002d2a089d02ab9 *tests/testthat/test-logr.R
 cf7f466a9078122a5a914d07384f9cf7 *tests/testthat/test-supplements.R
 5eb352587ecbaa7f0081d232336323c6 *tests/testthat/test-unicode.R
 12f8a917a027d9fe31df7a06db4fb2ef *tests/testthat/test-utilities.R
