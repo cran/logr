@@ -41,7 +41,7 @@ NULL
 e <- new.env(parent = emptyenv())
 e$log_status <- "closed"
 e$os <- Sys.info()[["sysname"]]
-
+e$log_blank_after <- TRUE
 # Log Separator
 separator <- 
   "========================================================================="
@@ -119,6 +119,13 @@ separator <-
 #' set the \code{autolog} parameter to TRUE, or set the global option
 #' \code{logr.autolog} to TRUE.  To maintain backward compatibility with 
 #' prior versions, autolog is disabled by default. 
+#' 
+#' The "compact" parameter will remove all the blank lines between log
+#' entries.  The downside of a compact log is that it makes the log 
+#' harder to read.  The benefit is 
+#' that it will take up less space.  The global option "logr.compact" will
+#' achieve the same result.
+#' 
 #' @param file_name The name of the log file.  If no path is specified, the 
 #' working directory will be used.  As of v1.2.7, the name and path of the 
 #' program or script will be used as a default if the \code{file_name} parameter
@@ -135,6 +142,10 @@ separator <-
 #' will override the global option.  The global option
 #' will override a NULL on this parameter. Default is that autolog is
 #' disabled.
+#' @param compact When the compact option is TRUE, \strong{logr} will 
+#' minimize the number of blank spaces in the log.  This option generates
+#' the same logging information, but in less space. The "logr.compact" global
+#' option does the same thing.
 #' @return The path of the log.
 #' @seealso \code{\link{log_print}} for printing to the log (and console), 
 #' and \code{\link{log_close}} to close the log.
@@ -161,7 +172,20 @@ separator <-
 #' # View results
 #' writeLines(readLines(lf))
 log_open <- function(file_name = "", logdir = TRUE, show_notes = TRUE,
-                     autolog = NULL) {
+                     autolog = NULL, compact = FALSE) {
+  
+  # Deal with compact log
+  if (is.null(options()[["logr.compact"]]) == FALSE) {
+    
+    optc <- options("logr.compact")
+    
+    e$log_blank_after = !optc[[1]] 
+    
+  } else {
+    
+    # Capture show_notes parameter
+    e$log_blank_after = !compact
+  }
 
   
   if (is.null(options()[["logr.on"]]) == FALSE) {
@@ -321,8 +345,7 @@ log_open <- function(file_name = "", logdir = TRUE, show_notes = TRUE,
       # Capture show_notes parameter
       e$log_show_notes = show_notes
     }
-
-  
+    
   }
   
   return(lpath)
@@ -334,8 +357,8 @@ log_open <- function(file_name = "", logdir = TRUE, show_notes = TRUE,
 #' 
 #' @description 
 #' The \code{log_print} function prints an object to the currently opened log.
-#' @usage log_print(x, ..., console = TRUE, blank_after = TRUE, msg = FALSE, hide_notes = FALSE)
-#' @usage put(x, ..., console = TRUE, blank_after = TRUE, msg = FALSE, hide_notes = FALSE)
+#' @usage log_print(x, ..., console = TRUE, blank_after = NULL, msg = FALSE, hide_notes = FALSE)
+#' @usage put(x, ..., console = TRUE, blank_after = NULL, msg = FALSE, hide_notes = FALSE)
 #' @usage sep(x, console = TRUE)
 #' @usage log_hook(x)
 #' @details 
@@ -413,11 +436,16 @@ log_open <- function(file_name = "", logdir = TRUE, show_notes = TRUE,
 #' writeLines(readLines(lf))
 log_print <- function(x, ..., 
                       console = TRUE, 
-                      blank_after = TRUE, 
+                      blank_after = NULL, 
                       msg = FALSE, 
                       hide_notes = FALSE) {
   
   update_status()
+  
+  if (is.null(blank_after)) {
+    
+    blank_after <- e$log_blank_after
+  }
   
   if (e$log_status == "open") {
   
@@ -457,9 +485,14 @@ log_print <- function(x, ...,
 #' @export
 put <- function(x, ..., 
                 console = TRUE, 
-                blank_after = TRUE, 
+                blank_after = NULL, 
                 msg = FALSE,
                 hide_notes = FALSE) {
+  
+  if (is.null(blank_after)) {
+    
+    blank_after <- e$log_blank_after
+  }
   
   # Pass everything to log_print()
   ret <- log_print(x, ..., console = console, blank_after = blank_after,
@@ -478,7 +511,7 @@ log_hook <- function(x) {
     if (e$log_status == "open" & e$autolog == TRUE) {
       
       # Pass everything to log_print()
-      log_print(x, console = FALSE, blank_after = TRUE, 
+      log_print(x, console = FALSE, blank_after = e$log_blank_after, 
                 msg = FALSE, hide_notes = FALSE)
     
     }
@@ -489,7 +522,11 @@ log_hook <- function(x) {
 
 #' @description Used internally to write header, footer, etc.
 #' @noRd
-log_quiet <- function(x, blank_after = TRUE, msg = FALSE) {
+log_quiet <- function(x, blank_after = NULL, msg = FALSE) {
+  
+ if (is.null(blank_after)) {
+   blank_after <- e$log_blank_after 
+ }
   
  ret <- log_print(x, console = FALSE, 
                   blank_after = blank_after, 
@@ -509,7 +546,7 @@ sep <- function(x, console = TRUE) {
   
   str <- paste(strwrap(x, nchar(separator)), collapse = "\n")
   ret <- log_print(str, blank_after = FALSE, hide_notes = TRUE)
-  log_print(separator, hide_notes = TRUE)
+  log_print(separator, hide_notes = TRUE, blank_after = e$log_blank_after)
   
   invisible(ret)
 }

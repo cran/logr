@@ -22,3 +22,10 @@ knitr::opts_chunk$set(
 #  options("logr.autolog" = FALSE)
 #  
 
+## ----eval=FALSE, echo=TRUE----------------------------------------------------
+#  # Turn on compact option
+#  options("logr.compact" = TRUE)
+#  
+#  # Turn off compact option
+#  options("logr.compact" = FALSE)
+

@@ -4,7 +4,13 @@
 \alias{log_open}
 \title{Open a log}
 \usage{
-log_open(file_name = "", logdir = TRUE, show_notes = TRUE, autolog = NULL)
+log_open(
+  file_name = "",
+  logdir = TRUE,
+  show_notes = TRUE,
+  autolog = NULL,
+  compact = FALSE
+)
 }
 \arguments{
 \item{file_name}{The name of the log file.  If no path is specified, the
@@ -26,6 +32,11 @@ set the "logr.autolog" option to TRUE. A FALSE value on this parameter
 will override the global option.  The global option
 will override a NULL on this parameter. Default is that autolog is
 disabled.}
+
+\item{compact}{When the compact option is TRUE, \strong{logr} will
+minimize the number of blank spaces in the log.  This option generates
+the same logging information, but in less space. The "logr.compact" global
+option does the same thing.}
 }
 \value{
 The path of the log.
@@ -97,6 +108,12 @@ The autolog feature provides automatic logging for \strong{dplyr},
 set the \code{autolog} parameter to TRUE, or set the global option
 \code{logr.autolog} to TRUE.  To maintain backward compatibility with
 prior versions, autolog is disabled by default.
+
+The "compact" parameter will remove all the blank lines between log
+entries.  The downside of a compact log is that it makes the log
+harder to read.  The benefit is
+that it will take up less space.  The global option "logr.compact" will
+achieve the same result.
 }
 \examples{
 # Create temp file location
