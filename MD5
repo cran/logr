@@ -1,12 +1,12 @@
-4941b26bd1542cfa53ae5d4417749000 *DESCRIPTION
+3402a1d28c5297fc3fb573ac266ab740 *DESCRIPTION
 0966da9deb3ab1842b1708f09deddae2 *NAMESPACE
-b1fd1ff94b588ba5918ba2f97378ae56 *NEWS.md
-f34c8a5d5dad41c949a0be3bce778dc2 *R/logr.R
+5cfb1fe3ee9047ca40c7e78da9f07ca7 *NEWS.md
+1101aa6cfde2403005ae3f0971fc66b0 *R/logr.R
 8a4f1c911c1c45ea77b62fe6b6785c9d *R/supplements.R
 84cba2277b2c851e9b39dfff0f4ab56a *R/unicode.R
 5f82209fd716a210cc45b0eb2f9c575d *R/utilities.R
 642835e42222784eec8a15e6b4a24664 *README.md
-1ac978b857ac3e008876bec85b69d6d7 *build/vignette.rds
+2833f4a05e00290ea8cee17d6776be7b *build/vignette.rds
 9d72a6f8951b73b4d81e2598fe8651a3 *inst/doc/logr-example1.R
 2b156baf784342faeb9de4bbaeae87aa *inst/doc/logr-example1.Rmd
 7404faaca3c2cc332c998a158b63a970 *inst/doc/logr-example1.html
@@ -46,7 +46,7 @@ f46d4b3e8e76ad702b87ea0ab499f8e1 *man/images/logr2.png
 3a4502c74b027e054e3c144d099669dd *man/log_path.Rd
 b0e734b032a16279ff20cb302ff44498 *man/log_print.Rd
 427e07b74ade1ab1c4e832d7e11dbd0e *man/log_status.Rd
-4c1b853b06b20ff94a1fc9b970039120 *man/logr.Rd
+936076e33dcb30c17d42f8cfcd68ce4b *man/logr.Rd
 6bbaa29edd41e31b9fc3e52b48d3372e *tests/testthat.R
 7f9d961b0a7c2bbe0967c0bd650cd1a1 *tests/testthat/log/test-logr.log
 d249da1277bb779407f080fc44c8904f *tests/testthat/log/test.log
