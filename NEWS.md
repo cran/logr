@@ -1,3 +1,11 @@
+# logr 1.3.7
+
+* Ensure that error and warning handlers are disconnected if log is closed.
+* Added options to not print header and footer if desired.  
+* Added `log_suspend()` and `log_resume()` functions.
+* Added `log_error()` and `log_warning()` functions.
+* Added `get_warnings()` function.
+
 # logr 1.3.6
 
 * Fixed warnings. They are now printing as expected.

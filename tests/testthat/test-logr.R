@@ -381,8 +381,6 @@ test_that("logr15: log_print() function works as expected when log is closed", {
 
 })
 
-
-
 test_that("logr16: logr.on = FALSE work as expected.", {
 
     options("logr.on" = FALSE)
@@ -398,10 +396,7 @@ test_that("logr16: logr.on = FALSE work as expected.", {
 
     log_close()
 
-
     expect_equal(file.exists(lf), FALSE)
-
-
 
 })
 
@@ -422,8 +417,8 @@ test_that("logr17: logr.on = TRUE works as expected.", {
 
   log_close()
 
-
   expect_equal(file.exists(lf), TRUE)
+
 })
 
 test_that("logr18: logr.autolog = FALSE works as expected.", {
@@ -759,5 +754,249 @@ test_that("logr29: Log directory is not appended if user specifies it.", {
   expect_equal(lf, pth)
 
 
+})
+
+
+test_that("logr30: Warnings are recorded on source.", {
+  
+  if (DEV) {
+    tmp <- base_path
+    
+    lpth <- file.path(tmp, "/programs/log/srctest1.msg")
+    
+    if (file.exists(lpth)) {
+      
+      file.remove(lpth) 
+    }
+    
+    
+    pth <- file.path(tmp, "/programs/srctest1.R")
+    
+    e <- new.env()
+    
+    source(pth)
+    
+    
+    expect_equal(file.exists(lpth), TRUE)
+  
+  } else {
+    
+    expect_equal(TRUE, TRUE) 
+    
+  }
+  
+})
+
+test_that("logr31: Errors are recorded on source.", {
+  
+  if (DEV) {
+    tmp <- base_path
+    
+    lpth <- file.path(tmp, "/programs/log/srctest2.msg")
+    
+    if (file.exists(lpth)) {
+      
+      file.remove(lpth) 
+    }
+    
+    
+    pth <- file.path(tmp, "/programs/srctest2.R")
+    
+    e <- new.env()
+    
+    source(pth)
+    
+    
+    expect_equal(file.exists(lpth), TRUE)
+    
+  } else {
+    
+    expect_equal(TRUE, TRUE) 
+    
+  }
+  
+})
+
+
+
+test_that("logr32: Warnings are recorded on source.all().", {
+  
+  if (DEV) {
+    tmp <- base_path
+    
+    lpth <- file.path(tmp, "/programs/log/srctest1.msg")
+    
+    if (file.exists(lpth)) {
+      
+      file.remove(lpth) 
+    }
+    
+    
+    pth <- file.path(tmp, "/programs")
+    
+    
+    source.all(pth, isolate = TRUE, pattern = "srctest1")
+    
+    
+    expect_equal(file.exists(lpth), TRUE)
+    
+  } else {
+    
+    expect_equal(TRUE, TRUE) 
+    
+  }
+  
+})
+
+
+test_that("logr33: Errors are recorded on source.all().", {
+  
+  if (DEV) {
+    tmp <- base_path
+    
+    lpth <- file.path(tmp, "/programs/log/srctest2.msg")
+    
+    if (file.exists(lpth)) {
+      
+      file.remove(lpth) 
+    }
+    
+    
+    pth <- file.path(tmp, "/programs")
+  
+    
+    source.all(pth, isolate = TRUE, pattern = "srctest2")
+    
+    
+    expect_equal(file.exists(lpth), TRUE)
+    
+  } else {
+    
+    expect_equal(TRUE, TRUE) 
+    
+  }
+  
+})
+
+
+test_that("logr34: header and footer options work as expected.", {
+  
+  tmp <- base_path
+  
+  lf <- log_open(file.path(tmp, "test35.log"), header = FALSE)
+  log_print("Here is the first log message")
+  log_print(mtcars)
+  
+  
+  
+  log_close(footer = FALSE)
+  
+  ret <- file.exists(lf)
+  
+  expect_equal(ret, TRUE)
+  
+})
+
+
+
+
+test_that("logr35: suspend and resume functions works as expected.", {
+  
+  
+  tmp <- base_path
+  
+  lf <- log_open(file.path(tmp, "test35.log"))
+  log_print("Before suspend")
+  
+  
+  log_suspend()
+  
+  
+  log_print("During suspend")
+  
+  log_resume(lf)
+  
+  log_print("After suspend")
+  
+  log_close()
+  
+  ret <- file.exists(lf)
+  
+  expect_equal(ret, TRUE)
+  
+})
+
+
+test_that("logr36: get_warnings() function works as expected.", {
+  
+  tmp <- base_path
+  
+  lp <- log_open(file.path(tmp, "test36.log"))
+  
+  log_print("Message 1")
+  log_warning("Warning 1")
+  log_print("Message 2")
+  
+  if (DEV) {
+    warning("Warning 2")
+  }
+  
+  log_close()
+  
+  mfl <- file.path(tmp, "./log/test36.msg")
+  
+  
+  expect_equal(file.exists(lp), TRUE)
+  expect_equal(file.exists(mfl), TRUE)
+  
+  res <- get_warnings()
+  
+  res
+  
+  expect_equal(length(res) > 0, TRUE)
+  expect_equal(res[1], "Warning: Warning 1")
+  
+  if (DEV) {
+    expect_equal(res[2], "Warning: Warning 2")
+  }
+  
+  res2 <- getOption("logr.warnings")
+  
+  
+  if (DEV) {
+    expect_equal(length(res2), 2)
+  } else {
+    expect_equal(length(res2), 1) 
+  }
+
+})
+
+
+
+# Should print error message to console.  
+test_that("logr37: Invalid file path is trapped in log_open.", {
+  
+  if (DEV) {
+
+  res1 <- log_open(" ")
+
+  tmp <- paste0("C:/PROGRA~1/R/R-43~1.2/bin/x64/Rterm.exe --no-save --no-restore ",
+                "-s -e \nattach(NULL, name = 'tools:rstudio');\nsys.source(",
+                "'C:/Program Files/RStudio/resources/app/R/modules/SourceWithProgress.R', ",
+                "envir = as.environment('tools:rstudio'));\n.rs.sourceWithProgress(\n   ",
+                "script = 'C:/Studies/Study1/test3.R',\n   encoding = 'UTF-8',\n   ",
+                "con = stdout(),\n   importRdata = NULL,\n   exportRdata = NULL\n)")
+  
+  
+  expect_error(log_open(tmp))
+  
+  } else {
+    
+    expect_equal(TRUE, TRUE)
+  } 
+  
+
+  #expect_equal(TRUE, TRUE)
+  
 })
 

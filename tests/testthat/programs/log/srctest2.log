@@ -1,6 +1,6 @@
 =========================================================================
-Log Path: c:\packages\logr\tests\testthat/fork/test29.log
-Program Path: C:/packages/logr/tests/testthat/test-logr.R
+Log Path: C:/packages/logr/tests/testthat/programs/log/srctest2.log
+Program Path: C:/packages/logr/tests/testthat/programs/srctest2.R
 Working Directory: C:/packages/logr
 User Name: dbosa
 R Version: 4.3.2 (2023-10-31 ucrt)
@@ -8,12 +8,13 @@ Machine: SOCRATES x86-64
 Operating System: Windows 10 x64 build 22621
 Base Packages: stats graphics grDevices utils datasets methods base
 Other Packages: dplyr_1.1.3 logr_1.3.7 testthat_3.1.10
-Log Start Time: 2024-03-31 23:03:53.860528
+Log Start Time: 2024-03-31 23:07:03.427021
 =========================================================================
-Here is the first log message
-NOTE: Log Print Time:  2024-03-31 23:03:53.862881
-NOTE: Elapsed Time: 0.00111198425292969 secs
+Hello
+NOTE: Log Print Time:  2024-03-31 23:07:03.429304
+NOTE: Elapsed Time: 0.00104284286499023 secs
+Error: stop me
 =========================================================================
-Log End Time: 2024-03-31 23:03:53.863264
+Log End Time: 2024-03-31 23:07:03.433532
 Log Elapsed Time: 0 00:00:00
 =========================================================================

@@ -14,3 +14,25 @@ Writes a warning message to the log. Warning will be written
 both to the log at the point the function is called, and also written to the
 message file.  This function is used internally.
 }
+\examples{
+library(logr)
+
+# Create temp file location
+tmp <- file.path(tempdir(), "test.log")
+
+# Open log
+lf <- log_open(tmp)
+
+# Send warning message to log
+log_warning("Here is a warning")
+
+# Close log
+log_close()
+
+# View results
+writeLines(readLines(lf))
+
+}
+\seealso{
+\code{\link{log_error}} to write an error message to the log.
+}

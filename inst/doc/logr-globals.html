@@ -391,6 +391,17 @@ TRUE or FALSE value, which will override anything set on
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
 <span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co"># Turn off traceback messaging</span></span>
 <span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="fu">options</span>(<span class="st">&quot;logr.traceback&quot;</span> <span class="ot">=</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p>If warnings are generated during execution of a program, they will be
+written to both the log and the message file. Warnings can also be
+returned programmatically using the <code>get_warnings()</code>
+function. The <strong>logr</strong> package will additionally populate a
+global variable named “logr.warnings” with a vector of the warnings.
+This global variable can be accessed as follows:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Get warnings from function</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>w1 <span class="ot">&lt;-</span> <span class="fu">get_warnings</span>()</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co"># Get warnings from global variable</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>w2 <span class="ot">&lt;-</span> <span class="fu">getOption</span>(<span class="st">&quot;logr.warnings&quot;</span>)</span></code></pre></div>
 <p>Next: <a href="logr-put.html">Aliases for log_print()</a></p>
 
 
