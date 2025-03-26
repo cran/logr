@@ -11,7 +11,9 @@ log_open(
   autolog = NULL,
   compact = FALSE,
   traceback = TRUE,
-  header = TRUE
+  header = TRUE,
+  stdout = FALSE,
+  line_size = 80
 )
 }
 \arguments{
@@ -20,9 +22,10 @@ working directory will be used.  As of v1.2.7, the name and path of the
 program or script will be used as a default if the \code{file_name} parameter
 is not supplied.}
 
-\item{logdir}{Send the log to a log directory named "log".  If the log
+\item{logdir}{Send the log to a log directory.  If the log
 directory does not exist, the function will create it.  Valid values are
-TRUE and FALSE. The default is TRUE.}
+TRUE, FALSE, or a quoted directory name. The default is TRUE.  The default
+log directory is named "log".}
 
 \item{show_notes}{If true, will write notes to the log.  Valid values are
 TRUE and FALSE. Default is TRUE.}
@@ -46,6 +49,15 @@ turn this feature off by setting the \code{traceback} parameter to FALSE.}
 
 \item{header}{Whether or not to print the log header.  Value values
 are TRUE and FALSE.  Default is TRUE.}
+
+\item{stdout}{If TRUE, the log will print to stdout instead of a file.
+Default is FALSE, which means the log will normally print to a file.
+This behavior can also be set with the global option
+\code{globals("logr.stdout" = TRUE)}.}
+
+\item{line_size}{The maximum character width for a line in the log. If the
+line exceeds the maximum width, the line will be broken and wrapped to the
+next line.  Default is 80 characters.}
 }
 \value{
 The path of the log.
@@ -69,9 +81,12 @@ the function will use the program/script name as the default
 log file name, and the program/script path as the default path.
 
 If requested in the \code{logdir} parameter, the \code{log_open}
-function will write to a 'log' subdirectory of the path specified in the
-\code{file_name}.  If the 'log' subdirectory does not exist,
-the function will create it.
+function will write to a subdirectory of the path specified in the
+\code{file_name}.  If the subdirectory does not exist,
+the function will create it.  By default, the subdirectory is named "log".
+If you want to name it something else, pass the desired name
+as a quoted string on the \code{logdir} parameter.  If you don't want
+to send the log to a subdirectory, set \code{logdir} to FALSE.
 
 The log file will be initialized with a header that shows the log file name,
 the current working directory, the current user, and a timestamp of

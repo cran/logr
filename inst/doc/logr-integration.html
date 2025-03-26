@@ -12,7 +12,7 @@
 
 
 
-<title>Aliases for log_print()</title>
+<title>Package Integration</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -336,84 +336,128 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">Aliases for log_print()</h1>
+<h1 class="title toc-ignore">Package Integration</h1>
 
 
 
-<p>Note that the <code>log_print()</code> function has two aliases:
-<code>put()</code> and <code>sep()</code>.</p>
-<p>The <code>put()</code> function is exactly like
-<code>log_print()</code>, but it is shorter and easier to type.</p>
-<p>The <code>sep()</code> function is a slight variant of
-<code>log_print()</code> that prints separators above and below the
-message text. It is useful for creating sections in your log. Breaking
-your log into sections makes it easier to read and understand.</p>
-<p>Here is example showing these aliases at work:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(logr)</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># Create temp file location</span></span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;test.log&quot;</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co"># Open log</span></span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>lf <span class="ot">&lt;-</span> <span class="fu">log_open</span>(tmp)</span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co"># Create log section</span></span>
-<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="fu">sep</span>(<span class="st">&quot;Illustration of put() and sep()&quot;</span>)</span>
-<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="co"># Send message to log</span></span>
-<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="fu">put</span>(<span class="st">&quot;High Mileage Cars Subset&quot;</span>)</span>
-<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="co"># Perform operations</span></span>
-<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>hmc <span class="ot">&lt;-</span> <span class="fu">subset</span>(mtcars, mtcars<span class="sc">$</span>mpg <span class="sc">&gt;</span> <span class="dv">20</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>  <span class="fu">put</span>() <span class="co"># prints pipeline result to log</span></span>
-<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a></span>
-<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a><span class="co"># Close log</span></span>
-<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a><span class="fu">log_close</span>()</span>
-<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a></span>
-<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a><span class="co"># View results</span></span>
-<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a><span class="fu">writeLines</span>(<span class="fu">readLines</span>(lf))</span></code></pre></div>
-<p>Here is the log from the above alias example:</p>
-<pre><code>========================================================================= 
-Log Path: C:/Users/User/AppData/Local/Temp/RtmpioAPbg/log/test.log 
-Working Directory: C:/packages/Testing 
-User Name: User 
-R Version: 4.0.3 (2020-10-10) 
-Machine: DESKTOP-1F27OR8 x86-64 
-Operating System: Windows 10 x64 build 18363 
-Base Packages: stats graphics grDevices utils datasets methods base
-Other Packages: logr_1.2.7 dplyr_1.0.7 
-Log Start Time: 2020-12-21 14:18:33 
-========================================================================= 
-
-========================================================================= 
-Illustration of put() and sep() 
-========================================================================= 
-
-High Mileage Cars Subset 
-
-                mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-Mazda RX4      21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-Mazda RX4 Wag  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-Datsun 710     22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-Merc 240D      24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
-Merc 230       22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
-Fiat 128       32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
-Honda Civic    30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
-Toyota Corolla 33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
-Toyota Corona  21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
-Fiat X1-9      27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
-Porsche 914-2  26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
-Lotus Europa   30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
-Volvo 142E     21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2
-
-========================================================================= 
-Log End Time: 2020-12-21 14:18:33 
-Log Elapsed Time: 0 00:00:00 
-========================================================================= </code></pre>
-<p>Next: <a href="https://logr.r-sassy.org/articles/logr-tidylog.html">tidylog
-Integration</a></p>
+<p>The <strong>logr</strong> package can be used as a logging system for
+R packages. The system is best suited for cases where you need a
+complete, SAS®-like log. It has functions to generate errors, warnings,
+and informative messages. The log header and footer are produced
+automatically. Notes and timestamps are already built in. In short, the
+<strong>logr</strong> package takes care of all the tedious details of
+logging, and lets you concentrate on documenting key activities and
+providing valuable feedback to your user.</p>
+<p>There are two types of logging you may want to offer with your custom
+R package: direct logging, and indirect logging.</p>
+<p>Direct logging means you want your package to create its own log.
+Indirect logging means the user of your package will be creating a log,
+and you want your package to contribute to the user’s log. Below are
+some considerations for each of these two types of logging.</p>
+<div id="direct-logging" class="section level3">
+<h3>Direct Logging</h3>
+<p>To integrate the <strong>logr</strong> package into your custom R
+package, take the following steps for direct logging:</p>
+<ol style="list-style-type: decimal">
+<li>Add <strong>logr</strong> to the “imports” section of your
+DESCRIPTION file.</li>
+<li>Add the directive “<span class="citation">@import</span> logr” to at
+least one roxygen function header.</li>
+<li>Add <strong>logr</strong> calls to your functions as desired.</li>
+</ol>
+<p>For this type of logging, there is normally a “main” or driver
+function, which branches to several subroutines. In this case, place the
+<code>log_open()</code> and <code>log_close()</code> function calls in
+the “main” function. Then place <code>log_print()</code> or
+<code>put()</code> calls in the subroutines. The printing functions will
+output to the log as expected.</p>
+<p>For direct logging, you may also use the <code>log_error()</code>,
+<code>log_warning()</code>, and <code>log_info()</code> functions as
+needed. Note that <code>log_error()</code> will not stop execution of
+your function calls. It will simply log the appropriate message and keep
+going. To stop execution of your function, use the Base R
+<code>stop()</code> function.</p>
+<p>Also note that <code>log_error()</code>, <code>log_warning()</code>
+and <code>log_info()</code> will send messages to the console. This
+feature is useful for notifying the user of what is going on with your
+package.</p>
+</div>
+<div id="indirect-logging" class="section level3">
+<h3>Indirect Logging</h3>
+<p>For indirect logging, the user will be creating their own log, and
+you want your package to write messages to their log.</p>
+<p>For example, you may be creating a package of utility functions, and
+the user is using your utility functions to write a program. The program
+will have the calls to <code>log_open()</code> and
+<code>log_close()</code>, but you want your utility functions to send
+messages to the program log. This outcome can be achieved with the
+logging hook.</p>
+<div id="logging-hook" class="section level4">
+<h4>Logging Hook</h4>
+<p>The <strong>logr</strong> package provides a special function,
+<code>log_hook()</code>, specifically designed for logging common
+informational messages from a custom package. The function is intended
+to be used in cases where you want to send items to the log, but not
+send anything to the console. In other words, the
+<code>log_hook()</code> function is for when you want to log things
+quietly and invisibly.</p>
+<p>To use indirect logging, take the following steps:</p>
+<ol style="list-style-type: decimal">
+<li>Add <strong>logr</strong> to the “suggests” section of your
+DESCRIPTION file.</li>
+<li>Do not add the directive “<span class="citation">@import</span>
+logr” to any roxygen function header.</li>
+<li>Do check to ensure <strong>logr</strong> is installed on the local
+machine.</li>
+<li>Add <code>logr::log_hook()</code> calls to your functions as
+desired, using the double colon full package reference.</li>
+</ol>
+<p>When called, the <code>log_hook()</code> function will first check to
+see whether the user’s log is open. If open, the function will then
+write the message to the user’s log. If a log is not open, the message
+will be ignored. This feature is useful to avoid “log not open” warnings
+from the <strong>logr</strong> package.</p>
+<p>Additionally, the <code>log_hook()</code> function is integrated with
+the “autolog” feature. In other words, <code>log_hook()</code> will only
+work when “autolog” is turned on. That means the user will be able to
+turn off your custom logging messages by turning off “autolog”. This
+feature gives the user some control over whether routine messages from
+your package are logged or not.</p>
+<p>The example below shows a custom function, where the function output
+is logged automatically using <code>log_hook()</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co">#&#39; @title Read an RDS file</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co">#&#39; @param file_path The path to the file. </span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co">#&#39; @return The RDS file contents as an R object.</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>read_file <span class="ot">&lt;-</span> <span class="cf">function</span>(file_path) {</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  </span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  ret <span class="ot">&lt;-</span>  <span class="fu">readRDS</span>(file_path)</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>  </span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(<span class="fu">find.package</span>(<span class="st">&#39;logr&#39;</span>, <span class="at">quiet=</span><span class="cn">TRUE</span>)) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>    logr<span class="sc">::</span><span class="fu">log_hook</span>(<span class="fu">paste0</span>(<span class="st">&quot;Read RDS file from &#39;&quot;</span>, file_path, <span class="st">&quot;&#39;&quot;</span>))</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>  }</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>  </span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>  <span class="fu">return</span>(ret)</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>}</span></code></pre></div>
+<p>The above function simply reads in an RDS file and returns the
+contents to the user. What is different about this function is that it
+will record the operation in the user’s log automatically via
+<code>log_hook()</code>. This integration allows you to provide
+automatic, invisible logging to your users in the most seamless way
+possible.</p>
+</div>
+<div id="indirect-logging-of-errors-and-warnings" class="section level4">
+<h4>Indirect Logging of Errors and Warnings</h4>
+<p>For indirect logging of errors and warnings, it is recommended to use
+the <code>stop()</code> and <code>warning()</code> Base R functions,
+instead of <code>log_error()</code> and <code>log_warning()</code>. The
+logger package will trap these Base R functions, and send the message to
+the log. The <code>stop()</code> command will also stop execution of
+your function. Stopping execution of the function is normally what is
+intended when an error occurs.</p>
+<p>Next: <a href="logr-example1.html">Complete Example</a></p>
+</div>
+</div>
 
 
 

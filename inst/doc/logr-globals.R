@@ -43,3 +43,19 @@ knitr::opts_chunk$set(
 #  # Get warnings from global variable
 #  w2 <- getOption("logr.warnings")
 
+## ----eval=FALSE, echo=TRUE----------------------------------------------------
+#  # Print log to stdout (console)
+#  options("logr.stdout" = TRUE)
+
+## ----eval=FALSE, echo=TRUE----------------------------------------------------
+#  # Restore printing
+#  options("logr.stdout" = FALSE)
+#  
+#  # Remove stdout option
+#  options("logr.stdout" = NULL)
+
+## ----eval=FALSE, echo=TRUE----------------------------------------------------
+#  # Restore printing
+#  options("logr.linesize" = 100)
+#  
+

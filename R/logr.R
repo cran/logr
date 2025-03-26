@@ -45,8 +45,9 @@ e$os <- Sys.info()[["sysname"]]
 e$log_blank_after <- TRUE
 e$log_warnings <- c()
 e$error_count <- 0
+e$log_stdout <- FALSE
 # Log Separator
-separator <- 
+e$separator <- 
   "========================================================================="
 
 
@@ -74,9 +75,12 @@ separator <-
 #' log file name, and the program/script path as the default path.
 #' 
 #' If requested in the \code{logdir} parameter, the \code{log_open}
-#' function will write to a 'log' subdirectory of the path specified in the 
-#' \code{file_name}.  If the 'log' subdirectory does not exist, 
-#' the function will create it.
+#' function will write to a subdirectory of the path specified in the 
+#' \code{file_name}.  If the subdirectory does not exist, 
+#' the function will create it.  By default, the subdirectory is named "log".
+#' If you want to name it something else, pass the desired name 
+#' as a quoted string on the \code{logdir} parameter.  If you don't want
+#' to send the log to a subdirectory, set \code{logdir} to FALSE.
 #' 
 #' The log file will be initialized with a header that shows the log file name,
 #' the current working directory, the current user, and a timestamp of
@@ -141,9 +145,10 @@ separator <-
 #' working directory will be used.  As of v1.2.7, the name and path of the 
 #' program or script will be used as a default if the \code{file_name} parameter
 #' is not supplied.
-#' @param logdir Send the log to a log directory named "log".  If the log 
+#' @param logdir Send the log to a log directory.  If the log 
 #' directory does not exist, the function will create it.  Valid values are 
-#' TRUE and FALSE. The default is TRUE.
+#' TRUE, FALSE, or a quoted directory name. The default is TRUE.  The default
+#' log directory is named "log".
 #' @param show_notes If true, will write notes to the log.  Valid values are 
 #' TRUE and FALSE. Default is TRUE.
 #' @param autolog Whether to turn on autolog functionality.  Autolog
@@ -162,6 +167,13 @@ separator <-
 #' turn this feature off by setting the \code{traceback} parameter to FALSE.
 #' @param header Whether or not to print the log header.  Value values
 #' are TRUE and FALSE.  Default is TRUE.
+#' @param stdout If TRUE, the log will print to stdout instead of a file.
+#' Default is FALSE, which means the log will normally print to a file.
+#' This behavior can also be set with the global option 
+#' \code{globals("logr.stdout" = TRUE)}.
+#' @param line_size The maximum character width for a line in the log. If the 
+#' line exceeds the maximum width, the line will be broken and wrapped to the 
+#' next line.  Default is 80 characters.
 #' @return The path of the log.
 #' @seealso \code{\link{log_print}} for printing to the log (and console), 
 #' and \code{\link{log_close}} to close the log.
@@ -191,7 +203,20 @@ separator <-
 #' writeLines(readLines(lf))
 log_open <- function(file_name = "", logdir = TRUE, show_notes = TRUE,
                      autolog = NULL, compact = FALSE, traceback = TRUE, 
-                     header = TRUE) {
+                     header = TRUE, stdout = FALSE, line_size = 80) {
+  
+  # Deal with stdout option 
+  if (is.null(options()[["logr.stdout"]]) == FALSE) {
+    
+    optc <- options("logr.stdout")
+    
+    e$log_stdout = optc[[1]] 
+    
+  } else {
+    
+    # Capture compact parameter
+    e$log_stdout = stdout
+  }
   
   # Deal with compact log
   if (is.null(options()[["logr.compact"]]) == FALSE) {
@@ -204,6 +229,30 @@ log_open <- function(file_name = "", logdir = TRUE, show_notes = TRUE,
     
     # Capture compact parameter
     e$log_blank_after = !compact
+  }
+  
+  # Deal with line size
+  if (is.null(options()[["logr.linesize"]]) == FALSE) {
+    
+    optc <- options("logr.linesize")
+    
+    e$line_size = optc[[1]] 
+    
+  } else {
+    
+    # Capture line size
+    e$line_size = line_size
+  }
+  
+  # Update separator according to line size.
+  # Default from original is 73.  Use this as max.
+  # No reason to exceed that for the separator.
+  # Actual log lines can go longer.
+  if (!is.null(e$line_size)) {
+    if (e$line_size > 0 && e$line_size < 80)
+      e$separator <- paste0(rep("=", e$line_size), collapse = "")
+    else 
+      e$separator <- paste0(rep("=", 73), collapse = "")
   }
 
   # Deal with traceback option
@@ -277,21 +326,30 @@ log_open <- function(file_name = "", logdir = TRUE, show_notes = TRUE,
     
   }
   
+  # Handle custom log directory
+  if (is.character(logdir)) {
+    logbase <- logdir
+    logdir <- TRUE
+  } else {
+    logbase <- "log" 
+  }
+  
+  
 #print("File name #1: " %p% file_name)
   
   if (trimws(file_name) != "") {
     
     # If there is no log extension, give it one
-    if (grepl(".log", file_name, fixed=TRUE) == TRUE)
+    if (grepl(".log", basename(file_name), fixed=TRUE) == TRUE)
       lpath <- file_name
     else
       lpath <- paste0(file_name, ".log")
     
     # Create log directory if needed
     d <- dirname(lpath)
-    if (logdir == TRUE & basename(d) != "log") {
+    if (logdir == TRUE & basename(d) != logbase) {
       tryCatch({
-        ldir <- file.path(d, "log")
+        ldir <- file.path(d, logbase)
         if (!dir.exists(ldir))
           dir.create(ldir, recursive = TRUE)
         lpath <- file.path(ldir, basename(lpath))
@@ -344,7 +402,8 @@ log_open <- function(file_name = "", logdir = TRUE, show_notes = TRUE,
   } else {
   
     # Create path for message file
-    mpath <- sub(".log", ".msg", lpath, fixed = TRUE)
+    fmpath <- sub(".log", ".msg", basename(lpath), fixed = TRUE)
+    mpath <- file.path(dirname(lpath), fmpath)
     e$msg_path <- mpath
   
       
@@ -530,22 +589,28 @@ log_print <- function(x, ...,
   if (e$log_status == "open") {
   
     # Print to console, if requested
-    if (console == TRUE)
-      print(x, ...)
+    if (console == TRUE || e$log_stdout) {
+      if (all("character" == class(x)) && length(x) == 1) {
+        cat(strwrap(x, width = 80), "\n")
+      } else {
+        print(x, ...)
+      }
+    }
     
     # Print to msg_path, if requested
     file_path <- e$log_path
     if (msg == TRUE)
       file_path <- e$msg_path
     
-    if (e$os == "Windows") {
-      
-      print_windows(x, file_path, blank_after, hide_notes, ...)
-      
-      
-    } else {
-      
-      print_other(x, file_path, blank_after, hide_notes, ...)
+    if (e$log_stdout == FALSE) {
+      if (e$os == "Windows") {
+        
+        print_windows(x, file_path, blank_after, hide_notes, ...)
+        
+      } else {
+        
+        print_other(x, file_path, blank_after, hide_notes, ...)
+      }
     }
     
     
@@ -624,11 +689,11 @@ log_quiet <- function(x, blank_after = NULL, msg = FALSE) {
 sep <- function(x, console = TRUE) {
   
   # Pass everything to log_print()
-  log_print(separator, blank_after = FALSE, hide_notes = TRUE, console = console)
+  log_print(e$separator, blank_after = FALSE, hide_notes = TRUE, console = console)
   
-  str <- paste(strwrap(x, nchar(separator)), collapse = "\n")
+  str <- paste(strwrap(x, nchar(e$separator)), collapse = "\n")
   ret <- log_print(str, blank_after = FALSE, hide_notes = TRUE, console = console)
-  log_print(separator, hide_notes = TRUE, blank_after = e$log_blank_after, console = console)
+  log_print(e$separator, hide_notes = TRUE, blank_after = e$log_blank_after, console = console)
   
   invisible(ret)
 }
@@ -759,9 +824,9 @@ log_suspend <- function() {
 
   if (e$log_status %in% c("open")) {
     
-    log_quiet(paste(separator), blank_after = FALSE)
+    log_quiet(paste(e$separator), blank_after = FALSE)
     log_quiet("Log suspended", blank_after = FALSE)
-    log_quiet(paste(separator), blank_after = TRUE)
+    log_quiet(paste(e$separator), blank_after = TRUE)
     
     log_quiet(paste0("Autolog: ", e$autolog), blank_after = FALSE)
     log_quiet(paste0("Log Path: ", e$log_path), blank_after = FALSE)
@@ -1197,4 +1262,63 @@ get_warnings <- function() {
 
 }
 
+
+#' @title Logs an informational message
+#' @description Writes an informational message to the log. Message will be written
+#' to the log at the point the function is called.  
+#' @param msg The message to log.  The message must be a character string.
+#' @param console Whether or not to print to the console.  Valid values are
+#' TRUE and FALSE.  Default is TRUE.
+#' @param blank_after Whether or not to print a blank line following the 
+#' printed message.  The blank line helps readability of the log.  Valid values
+#' are TRUE and FALSE. Default is TRUE.
+#' @param hide_notes If notes are on, this parameter gives you the option 
+#' of not printing notes for a particular log entry.  Default is FALSE, 
+#' meaning notes will be displayed.  Used internally.
+#' @return The object, invisibly
+#' @seealso \code{\link{log_warning}} to write a warning message to the log.
+#' @export
+#' @examples
+#' library(logr)
+#' 
+#' # Create temp file location
+#' tmp <- file.path(tempdir(), "test.log")
+#' 
+#' # Open log
+#' lf <- log_open(tmp)
+#' 
+#' # Send info to log
+#' log_info("Here is an info message")
+#'
+#' # Close log
+#' log_close()
+#' 
+#' # View results
+#' writeLines(readLines(lf))
+#' 
+log_info <- function(msg,
+                     console = TRUE, 
+                     blank_after = NULL, 
+                     hide_notes = FALSE) {
+  
+  if (is.null(blank_after)) {
+    
+    blank_after <- e$log_blank_after
+  }
+  
+  if (all("character" %in% class(msg))) {
+  
+    nmsg <- paste0("Info: ", msg)
+    
+    # Pass everything to log_print()
+    ret <- log_print(nmsg, console = console, blank_after = blank_after,
+                     msg = FALSE, hide_notes = hide_notes)
+  
+  } else {
+    ret <- msg
+    message("Info message must be a character string.")
+  }
+  
+  invisible(ret)
+}
 
