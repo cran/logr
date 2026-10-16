@@ -1,7 +1,7 @@
-edbbdf0121e4acb581cf605a9701915b *DESCRIPTION
+5803eef79c4c4546d75ccbfa9b5593f3 *DESCRIPTION
 3c61c2b504c9a87bc37db7cd9f482c3f *NAMESPACE
-47925ee81e248088ada21458555c09d3 *NEWS.md
-0816acf0d749825924556682ede68a46 *R/logr.R
+a0581ade4a8687a734c0e521707139a6 *NEWS.md
+402542046edd18aae59a013dc9f45aaa *R/logr.R
 8a4f1c911c1c45ea77b62fe6b6785c9d *R/supplements.R
 5b6ad3bab4b1cad5e17acf7dae4dceb5 *R/unicode.R
 d7a10268485e9a9e392b1b728748cf42 *R/utilities.R
@@ -58,7 +58,8 @@ fbc86668f8039f59407e1724ed533ac5 *man/log_warning.Rd
 889366c86127ff31edfc3a6ca6520712 *tests/testthat/fork/test29.log
 6739f47e2b7299fc5376ad65da0511b6 *tests/testthat/log/headerTest.log
 40be71e956a3aa15307792c03b1b17e6 *tests/testthat/log/resumeTest.log
-b8d108395528cbe02d182866a8eeef7d *tests/testthat/log/test-logr.log
+de5351f69850d1dc8d1c5d4d107e0b1b *tests/testthat/log/test-logr.log
+86135c838c37b5ba881ef741e2503e35 *tests/testthat/log/test-logr.msg
 87f33232ee20161ecd3e25290bc4abef *tests/testthat/log/test.log
 58b757c0fd646fc9bf128249ad8b547f *tests/testthat/log/test10.log
 4d83ebd7c58cdbc1eaf3aeec2576218a *tests/testthat/log/test11.log
@@ -82,7 +83,7 @@ d41d8cd98f00b204e9800998ecf8427e *tests/testthat/log/testme.log
 07738e45cb64d08c86401de05131d98b *tests/testthat/programs/log/srctest2.msg
 81c415bdc1a6f0c7285d1644ef4b138a *tests/testthat/programs/srctest1.R
 ef631e3c6361e83b0e0a8c4b913cc65e *tests/testthat/programs/srctest2.R
-9643cefe78c9032ba4191dc7d5d9983e *tests/testthat/test-logr.R
+a0da2993d75c236de8ce38ef2b48dd44 *tests/testthat/test-logr.R
 cf7f466a9078122a5a914d07384f9cf7 *tests/testthat/test-supplements.R
 7e73c12089dfa40ad3d86dac85b05a9a *tests/testthat/test-unicode.R
 cccbda60e3a34cb51dd699db86a6843d *tests/testthat/test-utilities.R
